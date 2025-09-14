@@ -6,6 +6,17 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a TypeScript/Vite browser game following an iterative development approach with baby-step increments.
 
+## 🚨 CRITICAL WORKFLOW REQUIREMENTS
+
+### Before Starting ANY Work:
+1. **ALWAYS read PROJECT_STATUS.md first** - Check current phase, completed tasks, and project health
+2. **Before starting new phase** - Review PROJECT_STATUS.md to understand what's been completed
+3. **After completing major milestones** - Update PROJECT_STATUS.md immediately
+
+This ensures continuity between sessions and prevents duplicate work.
+
+---
+
 ## Development Commands
 
 ### Project Setup (COMPLETED ✅)
@@ -22,9 +33,9 @@ yarn build          # Build for production
 yarn preview        # Preview production build
 ```
 
-### Testing & Quality (Future)
+### Testing & Quality
 ```bash
-yarn test           # Run unit tests (when Vitest is configured)
+yarn test           # Run unit tests (Vitest - 11 tests passing)
 yarn lint           # ESLint (when configured)  
 yarn format         # Prettier (when configured)
 ```
@@ -87,24 +98,42 @@ yarn format         # Prettier (when configured)
 
 **Status:** Complete interactive grid system ready for enemies
 
-### Phase 2 — Enemies & Base 🚧 NEXT
-7. Enemy variants: slow tank, fast weakling
-8. Base + HP: reaching end damages base, defeat condition
+### Phase 2 — Enemies & Base ✅ COMPLETED
+7. ✅ Enemy class: pathfinding, spawning system, base damage
+8. ✅ Base + HP: 20 health, real-time HUD, defeat when enemies escape
+9. ✅ Speed consistency: all systems affected by speed multiplier
 
-### Phase 3 — First Tower
-9. Placement: click grass tile, cost gold, prevent road/overlap
-10. Targeting & Projectile: nearest enemy, bullets, damage, kill rewards
-11. Balance panel: Tweakpane sliders for live tuning
+**Status:** Fully functional tower defense core gameplay loop
 
-### Phase 4 — Waves & Second Tower
-12. Waves: wave definitions, Start/Pause/Next Wave buttons
-13. Enemy 2: triangle fast enemy
-14. Tower 2 (Splash): AoE damage, expanding ring visual
+### Phase 3 — First Tower ✅ COMPLETED
+9. ✅ Tower class: stats, grid positioning, visual representation  
+10. ✅ Placement: click grass tile, cost gold, prevent road/overlap
+11. ✅ Targeting & Projectile: nearest enemy, bullets, damage, kill rewards
+12. ✅ Gold economy: starting gold, tower costs, enemy kill rewards
 
-### Phase 5+ — UX, Pathfinding, Polish
-15. HUD polish, save/load, SFX
-16. BFS pathfinding, no-block placement validation
-17. Performance optimization, win/lose screens
+**Status:** Complete tower defense game with full combat loop and economy
+
+### Phase 4 — Waves & Second Enemy ✅ COMPLETED
+13. ✅ Wave system: 6 waves with defined enemy patterns and progression
+14. ✅ Wave controls: "Start Wave" button with manual progression
+15. ✅ Fast enemy type: red triangles with different stats (5 HP, 140 speed)
+16. ✅ Wave splash screens: professional start/complete notifications
+17. ✅ Game state management: ready/playing/waveStart/waveComplete states
+18. ✅ Unit testing: comprehensive wave system test suite (11 tests)
+
+**Status:** Polished tower defense with wave progression and enemy variety
+
+### Phase 5 — Second Tower & Polish
+19. Tower 2 (Splash): AoE damage, expanding ring visual
+20. Tower upgrades: multiple levels with improved stats
+21. HUD polish: better UI, save/load, SFX integration
+22. Performance optimization: entity pooling, offscreen culling
+
+### Phase 6+ — Advanced Features
+23. BFS pathfinding: allow complex road networks
+24. No-block placement validation: prevent path blocking
+25. Multiple maps: JSON map loader system
+26. Achievement system: unlock progression
 
 ## Core Game Constants
 
@@ -181,6 +210,16 @@ const FPS = 60;                     // Fixed timestep target
 - Don't be afraid to delete code that doesn't improve the game
 - DO NOT keep broken code paths just to "get it done"
 
+### 🚨 CRITICAL: Speed Multiplier Consistency
+**ALL time-based systems MUST respect the speedMult variable:**
+- Enemy spawning ✅ (spawnTimer affected by speedMult)
+- Enemy movement ✅ (enemy speed affected by speedMult)  
+- Projectile movement ✅ (projectile speed affected by speedMult)
+- **Tower shooting rate** ✅ (shoot interval divided by speedMult)
+- **Any future timers** MUST be affected by speedMult
+
+**When adding ANY time-based feature, always ensure it scales with speed controls for consistent game feel.**
+
 ---
 
 ## Documentation Maintenance
@@ -214,6 +253,11 @@ const FPS = 60;                     // Fixed timestep target
 - ✅ After successful integration testing
 - ✅ After architecture changes
 - ✅ When transitioning between phases
+
+### 🚨 MANDATORY SESSION WORKFLOW:
+**At start of EVERY session:** Read PROJECT_STATUS.md to understand current state
+**Before starting new phase:** Review PROJECT_STATUS.md for completed work
+**After major changes:** Update PROJECT_STATUS.md immediately
 
 ### Documentation Standards:
 - Use consistent phase numbering (Phase 1, Phase 2, Phase 2.5, etc.)

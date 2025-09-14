@@ -1,8 +1,8 @@
 # Tower Defense Vibe Game 🎮
 
-## Current Status: Phase 1 Complete ✅
+## Current Status: Phase 4 Complete ✅
 
-A **browser-based tower defense** game built with TypeScript and Vite. Interactive grid system with path visualization now complete and ready for enemy entities.
+A **browser-based tower defense** game built with TypeScript and Vite. Complete tower defense with wave progression, enemy variety, professional splash screens, and comprehensive testing.
 
 **🎯 Play the current version:** `http://localhost:5173/` (after running `yarn dev`)
 
@@ -10,13 +10,29 @@ A **browser-based tower defense** game built with TypeScript and Vite. Interacti
 
 ## What's Working Now
 
+### Core Game Systems ✅
 * ✅ **Fixed timestep game loop** (60 FPS) with pause/resume
 * ✅ **HTML5 Canvas rendering** with interactive grid system 
 * ✅ **Mouse hover highlighting** - cells light up as you move your mouse
 * ✅ **Visual path system** - S-shaped path clearly visible as darker tiles
-* ✅ **Grid coordinate utilities** - world ↔ grid conversion functions
-* ✅ **Speed controls** (x1, x2, x4 multipliers)
-* ✅ **FPS monitoring** and display
+* ✅ **Speed controls** (x1, x2, x4 multipliers) - affects ALL systems consistently
+
+### Enemy & Defense Systems ✅  
+* ✅ **Enemy spawning system** - yellow enemies spawn every 2 seconds
+* ✅ **Pathfinding** - enemies smoothly follow the S-curve path
+* ✅ **Base health system** - 20 HP, decreases when enemies escape
+* ✅ **Real-time HUD** - shows FPS and current health (Health: X/20)
+
+### Tower System ✅
+* ✅ **Tower class** with stats (range, damage, rate, cost)
+* ✅ **Visual representation** - blue towers with range circles
+* ✅ **Interactive placement** - click grass tiles to place towers
+* ✅ **Combat system** - automatic targeting, projectiles, damage
+* ✅ **Gold economy** - tower costs, enemy kill rewards
+
+### Development Infrastructure ✅
+* ✅ **TypeScript** with full type safety and modular structure
+* ✅ **Unit testing framework** - Vitest with passing utility tests
 * ✅ **Vite development server** with TypeScript and HMR
 * ✅ **Production build system** ready for deployment
 
@@ -393,10 +409,12 @@ export interface Wave { type: EnemyType; count: number; spacing: number; }
 
 ## What to do next (copy to `TODO.md`)
 
-* [ ] Implement Step 9: Tower placement on grass.
-* [ ] Implement Step 10: Targeting & projectile damage.
+* ✅ ~~Implement Step 9: Tower placement on grass~~ **COMPLETED**
+* ✅ ~~Implement Step 10: Targeting & projectile damage~~ **COMPLETED**
 * [ ] Add Tweakpane sliders for range, rate, damage, enemy hp/speed.
+* [ ] Implement wave system with defined enemy patterns.
 * [ ] Make a second enemy type (triangle fast).
+* [ ] Add second tower type with splash damage.
 
 ---
 

@@ -35,7 +35,7 @@ yarn preview        # Preview production build
 
 ### Testing & Quality
 ```bash
-yarn test           # Run unit tests (Vitest - 11 tests passing)
+yarn test           # Run unit tests (Vitest - 21 tests passing)
 yarn lint           # ESLint (when configured)  
 yarn format         # Prettier (when configured)
 ```
@@ -57,25 +57,21 @@ yarn format         # Prettier (when configured)
 ### Recommended File Structure
 ```
 /src
-  main.ts              # Boot, game loop, UI wiring
-  engine/
+  main.ts              # Boot, game loop, UI wiring (315 lines after Phase 4.5 refactoring)
+  utils.ts             # Grid utilities (world↔grid conversion)
+  game/                # ✅ IMPLEMENTED: Modular game architecture
+    types.ts           # ✅ Shared interfaces and types
+    map.ts             # ✅ Path data and waypoints
+    enemy.ts           # ✅ Enemy class with movement and rendering
+    tower.ts           # ✅ Tower class with targeting and combat
+    projectile.ts      # ✅ Projectile class with physics
+    waves.ts           # ✅ Wave management with WaveManager class
+  engine/              # Future: Advanced engine features
     loop.ts            # Fixed timestep game loop
     input.ts           # Mouse/keyboard handling
     rng.ts             # Seeded PRNG
     debugHud.ts        # Stats overlays
-  game/
-    types.ts           # Shared interfaces
-    grid.ts            # Grid math utilities
-    path.ts            # BFS/A* pathfinding
-    map.ts             # Map data & loaders
-    entity.ts          # Base entity types
-    enemy.ts           # Enemy classes
-    tower.ts           # Tower classes & targeting
-    projectile.ts      # Bullets/splash effects
-    waves.ts           # Wave definitions
-    balance.ts         # Game balance values
-    save.ts            # localStorage persistence
-  ui/
+  ui/                  # Future: UI system extraction
     hud.ts             # Text overlays, buttons
     pane.ts            # Tweakpane bindings
 ```
@@ -123,17 +119,37 @@ yarn format         # Prettier (when configured)
 
 **Status:** Polished tower defense with wave progression and enemy variety
 
+### Phase 4.5 — Architecture Refactoring ✅ COMPLETED
+19. ✅ Extract Enemy class to `game/enemy.ts` with cleaner callbacks
+20. ✅ Extract Tower class to `game/tower.ts` with proper separation
+21. ✅ Extract Projectile class to `game/projectile.ts`
+22. ✅ Extract wave system to `game/waves.ts` with WaveManager class
+23. ✅ Extract shared types to `game/types.ts`
+24. ✅ Extract map data to `game/map.ts`
+25. ✅ Refactor main.ts to focus on game loop and UI (537→315 lines)
+
+**Status:** Clean modular architecture ready for Phase 5 feature expansion
+
+### Phase 4.6 — UI Polish & Speed Balance ✅ COMPLETED
+26. ✅ Enhanced UI design: centered HUD, larger fonts, modern styling
+27. ✅ Play/Pause toggle button for improved UX
+28. ✅ Speed balance fix: collision detection compensation
+29. ✅ Comprehensive balance testing (21 unit tests total)
+
+**Status:** Polished, balanced tower defense with modern UI and fair gameplay
+
 ### Phase 5 — Second Tower & Polish
-19. Tower 2 (Splash): AoE damage, expanding ring visual
-20. Tower upgrades: multiple levels with improved stats
-21. HUD polish: better UI, save/load, SFX integration
-22. Performance optimization: entity pooling, offscreen culling
+30. Tower 2 (Splash): AoE damage, expanding ring visual
+31. Tower upgrades: multiple levels with improved stats
+32. Save/load system: localStorage persistence
+33. Sound effects: Howler.js integration
+34. Performance optimization: entity pooling, offscreen culling
 
 ### Phase 6+ — Advanced Features
-23. BFS pathfinding: allow complex road networks
-24. No-block placement validation: prevent path blocking
-25. Multiple maps: JSON map loader system
-26. Achievement system: unlock progression
+35. BFS pathfinding: allow complex road networks
+36. No-block placement validation: prevent path blocking
+37. Multiple maps: JSON map loader system
+38. Achievement system: unlock progression
 
 ## Core Game Constants
 

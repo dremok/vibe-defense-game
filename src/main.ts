@@ -1,15 +1,21 @@
-import { CELL, worldToGrid, gridToWorld } from './utils.js';
+import { CELL, worldToGrid } from './utils.js';
+import { Enemy } from './game/enemy.js';
+import { Tower, TOWER_STATS } from './game/tower.js';
+import { Projectile } from './game/projectile.js';
+import { WaveManager } from './game/waves.js';
+import { pathCells, waypoints } from './game/map.js';
+import type { GameState, TowerType } from './game/types.js';
 
 const canvas = document.getElementById('game') as HTMLCanvasElement;
 const ctx = canvas.getContext('2d')!;
-const fpsEl = document.getElementById('fps')!;
 const healthEl = document.getElementById('health')!;
 const goldEl = document.getElementById('gold')!;
 const waveEl = document.getElementById('wave')!;
-const btnStart = document.getElementById('btnStart')!;
 const btnPause = document.getElementById('btnPause')!;
 const btnSpeed = document.getElementById('btnSpeed')!;
 const btnWave = document.getElementById('btnWave')!;
+const btnTowerBasic = document.getElementById('btn-tower-basic')!;
+const btnTowerSniper = document.getElementById('btn-tower-sniper')!;
 
 // ------ Game constants ------
 const W = canvas.width;
@@ -17,204 +23,12 @@ const H = canvas.height;
 let speedMult = 1;
 
 // ------ Game state ------
-type GameState = 'ready' | 'playing' | 'waveStart' | 'waveComplete' | 'gameOver';
 let gameState: GameState = 'ready'; // Start ready to begin first wave
 let splashTimer = 0;
 const SPLASH_DURATION = 2; // seconds to show splash
 
 // ------ Mouse tracking ------
 let mouseX = 0, mouseY = 0;
-
-// ------ Path definition ------
-const pathCells = [
-  [1,1],[2,1],[3,1],[4,1],[5,1],[6,1],[7,1],[8,1],
-  [8,2],[8,3],[8,4],[8,5],[8,6],
-  [7,6],[6,6],[5,6],[4,6],[3,6],[2,6],
-  [2,7],[2,8],[2,9],[2,10],[2,11],
-  [3,11],[4,11],[5,11],[6,11],[7,11],[8,11],[9,11],[10,11]
-];
-const waypoints = pathCells.map(([gx, gy]) => gridToWorld(gx, gy));
-
-// ------ Enemy class ------
-type EnemyType = 'normal' | 'fast';
-
-class Enemy {
-  x: number; 
-  y: number; 
-  i = 0;
-  hp: number;
-  speed: number;
-  alive = true;
-  type: EnemyType;
-  
-  constructor(type: EnemyType = 'normal') {
-    this.x = waypoints[0].x;
-    this.y = waypoints[0].y;
-    this.type = type;
-    
-    // Set stats based on type
-    if (type === 'fast') {
-      this.hp = 5;   // Half health
-      this.speed = 140; // Much faster
-    } else {
-      this.hp = 10;  // Normal health
-      this.speed = 80; // Normal speed
-    }
-  }
-  
-  update(dt: number) {
-    if (!this.alive) return;
-    const target = waypoints[this.i + 1];
-    if (!target) {
-      this.alive = false; // reached end
-      baseHealth = Math.max(0, baseHealth - 1); // damage base
-      return;
-    }
-    const dx = target.x - this.x;
-    const dy = target.y - this.y;
-    const dist = Math.hypot(dx, dy);
-    const step = this.speed * dt * speedMult;
-    if (dist <= step) {
-      this.x = target.x;
-      this.y = target.y;
-      this.i++;
-    } else {
-      this.x += (dx/dist) * step;
-      this.y += (dy/dist) * step;
-    }
-  }
-  
-  draw(g: CanvasRenderingContext2D) {
-    if (!this.alive) return;
-    
-    if (this.type === 'fast') {
-      // Fast enemy: red triangle
-      g.fillStyle = '#ff4444';
-      g.beginPath();
-      g.moveTo(this.x, this.y - 8);
-      g.lineTo(this.x - 7, this.y + 6);
-      g.lineTo(this.x + 7, this.y + 6);
-      g.closePath();
-      g.fill();
-    } else {
-      // Normal enemy: yellow circle
-      g.fillStyle = '#ffcc33';
-      g.beginPath();
-      g.arc(this.x, this.y, 8, 0, Math.PI * 2);
-      g.fill();
-    }
-  }
-}
-
-// ------ Tower class ------
-class Tower {
-  gx: number;
-  gy: number;
-  x: number;
-  y: number;
-  range = 80;
-  damage = 2;
-  rate = 1.5; // shots per second
-  cost = 100;
-  lastShot = 0;
-  
-  constructor(gx: number, gy: number) {
-    this.gx = gx;
-    this.gy = gy;
-    const worldPos = gridToWorld(gx, gy);
-    this.x = worldPos.x;
-    this.y = worldPos.y;
-  }
-  
-  findTarget(enemies: Enemy[]): Enemy | null {
-    let closest: Enemy | null = null;
-    let closestDist = Infinity;
-    
-    for (const enemy of enemies) {
-      if (!enemy.alive) continue;
-      const dx = enemy.x - this.x;
-      const dy = enemy.y - this.y;
-      const dist = Math.hypot(dx, dy);
-      
-      if (dist <= this.range && dist < closestDist) {
-        closest = enemy;
-        closestDist = dist;
-      }
-    }
-    
-    return closest;
-  }
-  
-  update(dt: number, enemies: Enemy[]) {
-    const target = this.findTarget(enemies);
-    const shootInterval = (1000 / this.rate) / speedMult; // Affected by speed multiplier
-    if (target && performance.now() - this.lastShot > shootInterval) {
-      const projectile = new Projectile(this.x, this.y, target.x, target.y, this.damage);
-      projectiles.push(projectile);
-      this.lastShot = performance.now();
-    }
-  }
-  
-  draw(g: CanvasRenderingContext2D) {
-    // Tower body (square)
-    g.fillStyle = '#4a5d7a';
-    const size = 12;
-    g.fillRect(this.x - size/2, this.y - size/2, size, size);
-    
-    // Range circle (debug)
-    g.strokeStyle = 'rgba(100,150,255,0.3)';
-    g.lineWidth = 1;
-    g.beginPath();
-    g.arc(this.x, this.y, this.range, 0, Math.PI * 2);
-    g.stroke();
-  }
-}
-
-// ------ Projectile class ------
-class Projectile {
-  x: number;
-  y: number;
-  targetX: number;
-  targetY: number;
-  speed = 200;
-  damage: number;
-  alive = true;
-  
-  constructor(startX: number, startY: number, targetX: number, targetY: number, damage: number) {
-    this.x = startX;
-    this.y = startY;
-    this.targetX = targetX;
-    this.targetY = targetY;
-    this.damage = damage;
-  }
-  
-  update(dt: number) {
-    if (!this.alive) return;
-    
-    const dx = this.targetX - this.x;
-    const dy = this.targetY - this.y;
-    const dist = Math.hypot(dx, dy);
-    const step = this.speed * dt * speedMult;
-    
-    if (dist <= step) {
-      // Hit target
-      this.x = this.targetX;
-      this.y = this.targetY;
-      this.alive = false;
-    } else {
-      this.x += (dx/dist) * step;
-      this.y += (dy/dist) * step;
-    }
-  }
-  
-  draw(g: CanvasRenderingContext2D) {
-    if (!this.alive) return;
-    g.fillStyle = '#ffaa00';
-    g.beginPath();
-    g.arc(this.x, this.y, 3, 0, Math.PI * 2);
-    g.fill();
-  }
-}
 
 // ------ Base system ------
 let baseHealth = 20;
@@ -223,45 +37,29 @@ const MAX_HEALTH = 20;
 // ------ Gold system ------
 let gold = 500; // Starting gold
 
+// ------ Tower selection ------
+let selectedTowerType: TowerType = 'basic';
+
 // ------ Wave system ------
-interface Wave {
-  enemyCount: number;
-  spawnInterval: number; // seconds between spawns
-  enemyType: EnemyType;
-}
-
-const waves: Wave[] = [
-  { enemyCount: 5, spawnInterval: 2.0, enemyType: 'normal' },
-  { enemyCount: 8, spawnInterval: 1.5, enemyType: 'normal' },
-  { enemyCount: 6, spawnInterval: 1.2, enemyType: 'fast' },    // First fast wave
-  { enemyCount: 10, spawnInterval: 1.0, enemyType: 'normal' },
-  { enemyCount: 8, spawnInterval: 0.8, enemyType: 'fast' },    // More fast enemies
-  { enemyCount: 15, spawnInterval: 0.6, enemyType: 'normal' },
-];
-
-let currentWave = 0;
-let enemiesSpawned = 0;
-let spawnTimer = 0;
-let waveActive = false;
+const waveManager = new WaveManager();
 
 // ------ Enemy management ------
 const enemies: Enemy[] = [];
 
-function spawnEnemy() {
-  const wave = waves[currentWave - 1]; // currentWave is 1-indexed after startNextWave
-  if (wave) {
-    enemies.push(new Enemy(wave.enemyType));
-    enemiesSpawned++;
+function damageBase() {
+  baseHealth = Math.max(0, baseHealth - 1);
+  if (baseHealth <= 0) {
+    gameState = 'gameOver';
+    paused = true;
   }
 }
 
 function startNextWave() {
-  if (currentWave < waves.length && !waveActive) {
-    currentWave++;
+  if (waveManager.startNextWave()) {
     gameState = 'waveStart';
     splashTimer = SPLASH_DURATION;
     paused = false; // Auto-unpause when starting a wave
-    // Don't start spawning yet - wait for splash to finish
+    btnPause.textContent = paused ? 'Play' : 'Pause'; // Update button text
   }
 }
 
@@ -284,9 +82,9 @@ function canPlaceTower(gx: number, gy: number): boolean {
 }
 
 function placeTower(gx: number, gy: number): boolean {
-  const towerCost = 100; // Tower cost
+  const towerCost = TOWER_STATS[selectedTowerType].cost;
   if (canPlaceTower(gx, gy) && gold >= towerCost) {
-    towers.push(new Tower(gx, gy));
+    towers.push(new Tower(gx, gy, selectedTowerType));
     gold -= towerCost;
     return true;
   }
@@ -297,8 +95,10 @@ function placeTower(gx: number, gy: number): boolean {
 let acc = 0; 
 const step = 1/60; 
 let last = performance.now();
-let frames = 0, fps = 0, fpsAccum = 0; 
 let paused = true;
+
+// ------ Simulation time tracking ------
+let simulationTime = 0;
 
 function loop(now: number) {
   requestAnimationFrame(loop);
@@ -308,20 +108,14 @@ function loop(now: number) {
   
   if (!paused) acc += dt;
   while (acc >= step) { 
-    update(step); 
+    // Run multiple simulation steps based on speed multiplier
+    for (let i = 0; i < speedMult; i++) {
+      update(step);
+      simulationTime += step; // Track cumulative simulation time
+    }
     acc -= step; 
   }
   render();
-  
-  // FPS calculation
-  fpsAccum += dt; 
-  frames++;
-  if (fpsAccum >= 0.5) { 
-    fps = Math.round(frames / fpsAccum); 
-    fpsEl.textContent = String(fps); 
-    frames = 0; 
-    fpsAccum = 0; 
-  }
   
   // Update health display
   healthEl.textContent = String(baseHealth);
@@ -330,7 +124,22 @@ function loop(now: number) {
   goldEl.textContent = String(gold);
   
   // Update wave display
-  waveEl.textContent = String(currentWave);
+  waveEl.textContent = String(waveManager.currentWave);
+  
+  // Show/hide and disable buttons based on game state
+  if (gameState === 'gameOver' || gameState === 'victory') {
+    // Disable all buttons in game over or victory state
+    btnPause.style.display = 'none';
+    btnSpeed.style.display = 'none';
+    btnWave.style.display = 'none';
+  } else {
+    btnSpeed.style.display = 'inline-block';
+    btnWave.style.display = 'inline-block';
+    btnPause.style.display = (gameState === 'playing' && waveManager.waveActive) ? 'inline-block' : 'none';
+  }
+  
+  // Update tower selection UI
+  updateTowerSelection();
 }
 
 function update(dt: number) {
@@ -340,9 +149,7 @@ function update(dt: number) {
     if (splashTimer <= 0) {
       // Start the actual wave
       gameState = 'playing';
-      waveActive = true;
-      enemiesSpawned = 0;
-      spawnTimer = 0;
+      waveManager.beginWaveSpawning();
     }
     return; // Don't update game during splash
   }
@@ -355,29 +162,29 @@ function update(dt: number) {
     return; // Don't update game during splash
   }
   
-  // Wave-based enemy spawning (affected by speed multiplier)
-  if (waveActive && currentWave > 0 && currentWave <= waves.length) {
-    const wave = waves[currentWave - 1]; // currentWave is 1-indexed
-    spawnTimer -= dt * speedMult;
-    
-    if (spawnTimer <= 0 && enemiesSpawned < wave.enemyCount) {
-      spawnEnemy();
-      spawnTimer = wave.spawnInterval;
-    }
-    
-    // Check if wave is complete (all enemies spawned and defeated)
-    if (enemiesSpawned >= wave.enemyCount && enemies.filter(e => e.alive).length === 0) {
-      waveActive = false;
+  // Don't update game when game is over or victory achieved
+  if (gameState === 'gameOver' || gameState === 'victory') {
+    return;
+  }
+  
+  // Update wave system
+  if (waveManager.update(dt, enemies)) {
+    if (waveManager.isLastWave()) {
+      gameState = 'victory';
+      paused = true;
+    } else {
       gameState = 'waveComplete';
       splashTimer = SPLASH_DURATION;
     }
   }
   
   // Update enemies
-  enemies.forEach(e => e.update(dt));
+  enemies.forEach(e => e.update(dt, damageBase));
   
   // Update towers
-  towers.forEach(t => t.update(dt, enemies));
+  towers.forEach(t => t.update(dt, enemies, simulationTime, (projectile) => {
+    projectiles.push(projectile);
+  }));
   
   // Update projectiles
   projectiles.forEach(p => p.update(dt));
@@ -396,11 +203,13 @@ function update(dt: number) {
       const dy = enemy.y - projectile.y;
       const dist = Math.hypot(dx, dy);
       
-      if (dist < 12) { // Hit radius
+      const hitRadius = 12;
+      
+      if (dist < hitRadius) {
         enemy.hp -= projectile.damage;
         if (enemy.hp <= 0) {
           enemy.alive = false;
-          gold += 25; // Gold reward for killing enemy
+          gold += 25;
         }
         projectile.alive = false;
         projectiles.splice(i, 1);
@@ -421,36 +230,57 @@ function renderSplash() {
   ctx.textBaseline = 'middle';
   
   if (gameState === 'waveStart') {
-    const wave = waves[currentWave - 1];
-    const enemyTypeText = wave.enemyType === 'fast' ? 'Fast Enemies' : 'Normal Enemies';
-    
-    ctx.font = 'bold 48px sans-serif';
-    ctx.fillText(`WAVE ${currentWave}`, W/2, H/2 - 40);
-    
-    ctx.font = '24px sans-serif';
-    ctx.fillText(`${wave.enemyCount} ${enemyTypeText}`, W/2, H/2 + 20);
-    
-    ctx.font = '16px sans-serif';
-    ctx.fillStyle = '#cccccc';
-    ctx.fillText('Get Ready!', W/2, H/2 + 60);
+    const wave = waveManager.getCurrentWave();
+    if (wave) {
+      const enemyTypeText = wave.enemyType === 'fast' ? 'Fast Enemies' : 'Normal Enemies';
+      
+      ctx.font = 'bold 64px sans-serif';
+      ctx.fillText(`WAVE ${waveManager.currentWave}`, W/2, H/2 - 50);
+      
+      ctx.font = '32px sans-serif';
+      ctx.fillText(`${wave.enemyCount} ${enemyTypeText}`, W/2, H/2 + 10);
+      
+      ctx.font = '20px sans-serif';
+      ctx.fillStyle = '#cccccc';
+      ctx.fillText('Get Ready!', W/2, H/2 + 60);
+    }
   }
   
   if (gameState === 'waveComplete') {
-    if (currentWave < waves.length) {
-      ctx.font = 'bold 36px sans-serif';
-      ctx.fillText('WAVE COMPLETE!', W/2, H/2 - 20);
-      
-      ctx.font = '20px sans-serif';
-      ctx.fillStyle = '#44ff44';
-      ctx.fillText('Click "Start Wave" for next wave', W/2, H/2 + 30);
-    } else {
-      ctx.font = 'bold 36px sans-serif';
-      ctx.fillText('ALL WAVES COMPLETE!', W/2, H/2 - 20);
-      
-      ctx.font = '20px sans-serif';
-      ctx.fillStyle = '#44ff44';
-      ctx.fillText('You Won!', W/2, H/2 + 30);
-    }
+    ctx.font = 'bold 48px sans-serif';
+    ctx.fillText('WAVE COMPLETE!', W/2, H/2 - 30);
+    
+    ctx.font = '24px sans-serif';
+    ctx.fillStyle = '#44ff44';
+    ctx.fillText('Click "Start Wave" for next wave', W/2, H/2 + 30);
+  }
+  
+  if (gameState === 'gameOver') {
+    ctx.font = 'bold 64px sans-serif';
+    ctx.fillStyle = '#ff4444';
+    ctx.fillText('GAME OVER', W/2, H/2 - 50);
+    
+    ctx.font = '32px sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText('Your base was destroyed!', W/2, H/2 + 10);
+    
+    ctx.font = '20px sans-serif';
+    ctx.fillStyle = '#cccccc';
+    ctx.fillText('Refresh the page to play again', W/2, H/2 + 60);
+  }
+  
+  if (gameState === 'victory') {
+    ctx.font = 'bold 64px sans-serif';
+    ctx.fillStyle = '#44ff44';
+    ctx.fillText('VICTORY!', W/2, H/2 - 50);
+    
+    ctx.font = '32px sans-serif';
+    ctx.fillStyle = '#ffffff';
+    ctx.fillText('All waves completed!', W/2, H/2 + 10);
+    
+    ctx.font = '20px sans-serif';
+    ctx.fillStyle = '#cccccc';
+    ctx.fillText('Refresh the page to play again', W/2, H/2 + 60);
   }
 }
 
@@ -481,11 +311,29 @@ function render() {
     ctx.fillRect(gx * CELL + 1, gy * CELL + 1, CELL - 2, CELL - 2);
   });
   
-  // Hover highlight
+  // Hover highlight and tower placement preview
   const hoverGrid = worldToGrid(mouseX, mouseY);
   if (hoverGrid.gx >= 0 && hoverGrid.gx * CELL < W && hoverGrid.gy >= 0 && hoverGrid.gy * CELL < H) {
-    ctx.fillStyle = 'rgba(255,255,255,0.1)';
-    ctx.fillRect(hoverGrid.gx * CELL, hoverGrid.gy * CELL, CELL, CELL);
+    const canPlace = canPlaceTower(hoverGrid.gx, hoverGrid.gy);
+    const canAfford = gold >= TOWER_STATS[selectedTowerType].cost;
+    
+    if (canPlace && canAfford) {
+      // Valid placement - green highlight with tower preview
+      ctx.fillStyle = 'rgba(0,255,0,0.3)';
+      ctx.fillRect(hoverGrid.gx * CELL, hoverGrid.gy * CELL, CELL, CELL);
+      
+      // Draw tower preview
+      const worldPos = { x: hoverGrid.gx * CELL + CELL/2, y: hoverGrid.gy * CELL + CELL/2 };
+      drawTowerPreview(ctx, worldPos.x, worldPos.y, selectedTowerType);
+    } else if (canPlace && !canAfford) {
+      // Valid location but can't afford - yellow highlight  
+      ctx.fillStyle = 'rgba(255,255,0,0.3)';
+      ctx.fillRect(hoverGrid.gx * CELL, hoverGrid.gy * CELL, CELL, CELL);
+    } else {
+      // Invalid placement - red highlight
+      ctx.fillStyle = 'rgba(255,0,0,0.3)';
+      ctx.fillRect(hoverGrid.gx * CELL, hoverGrid.gy * CELL, CELL, CELL);
+    }
   }
   
   // Draw towers
@@ -498,14 +346,16 @@ function render() {
   enemies.forEach(e => e.draw(ctx));
   
   // Draw splash screens on top
-  if (gameState === 'waveStart' || gameState === 'waveComplete') {
+  if (gameState === 'waveStart' || gameState === 'waveComplete' || gameState === 'gameOver' || gameState === 'victory') {
     renderSplash();
   }
 }
 
 // ------ Controls ------
-btnStart.addEventListener('click', () => { paused = false; });
-btnPause.addEventListener('click', () => { paused = true; });
+btnPause.addEventListener('click', () => { 
+  paused = !paused; 
+  btnPause.textContent = paused ? 'Play' : 'Pause';
+});
 btnSpeed.addEventListener('click', () => {
   const cycle = { 'x1': 1, 'x2': 2, 'x4': 4 } as const;
   const next = btnSpeed.textContent === 'x1' ? 'x2' : btnSpeed.textContent === 'x2' ? 'x4' : 'x1';
@@ -513,10 +363,85 @@ btnSpeed.addEventListener('click', () => {
   speedMult = next === 'x1' ? 1 : next === 'x2' ? 2 : 4;
 });
 btnWave.addEventListener('click', () => {
-  if (!waveActive && currentWave < waves.length && (gameState === 'playing' || gameState === 'ready')) {
+  if (gameState !== 'gameOver' && gameState !== 'victory' && !waveManager.waveActive && waveManager.currentWave < 6 && (gameState === 'playing' || gameState === 'ready')) {
     startNextWave();
   }
 });
+
+// Tower selection buttons
+btnTowerBasic.addEventListener('click', () => {
+  if (gameState !== 'gameOver' && gameState !== 'victory') {
+    selectedTowerType = 'basic';
+    updateTowerSelection();
+  }
+});
+btnTowerSniper.addEventListener('click', () => {
+  if (gameState !== 'gameOver' && gameState !== 'victory') {
+    selectedTowerType = 'sniper';
+    updateTowerSelection();
+  }
+});
+
+function updateTowerSelection() {
+  // Update visual selection
+  btnTowerBasic.classList.toggle('selected', selectedTowerType === 'basic');
+  btnTowerSniper.classList.toggle('selected', selectedTowerType === 'sniper');
+  
+  // Update button affordability based on current gold
+  const basicCost = TOWER_STATS.basic.cost;
+  const sniperCost = TOWER_STATS.sniper.cost;
+  
+  btnTowerBasic.style.opacity = gold >= basicCost ? '1' : '0.5';
+  btnTowerSniper.style.opacity = gold >= sniperCost ? '1' : '0.5';
+}
+
+
+function drawTowerPreview(g: CanvasRenderingContext2D, x: number, y: number, type: TowerType) {
+  const size = 12;
+  g.save();
+  g.globalAlpha = 0.7; // Semi-transparent preview
+  
+  if (type === 'sniper') {
+    // Sniper tower: dark green hexagon
+    g.fillStyle = '#2d5016';
+    g.beginPath();
+    for (let i = 0; i < 6; i++) {
+      const angle = (i * Math.PI) / 3;
+      const px = x + (size * 0.8) * Math.cos(angle);
+      const py = y + (size * 0.8) * Math.sin(angle);
+      if (i === 0) g.moveTo(px, py);
+      else g.lineTo(px, py);
+    }
+    g.closePath();
+    g.fill();
+    
+    // Scope symbol
+    g.fillStyle = '#44ff44';
+    g.beginPath();
+    g.arc(x, y, 3, 0, Math.PI * 2);
+    g.fill();
+    
+    // Range circle
+    g.strokeStyle = 'rgba(68,255,68,0.2)';
+    g.lineWidth = 1;
+    g.beginPath();
+    g.arc(x, y, TOWER_STATS.sniper.range, 0, Math.PI * 2);
+    g.stroke();
+  } else {
+    // Basic tower: blue square
+    g.fillStyle = '#4a5d7a';
+    g.fillRect(x - size/2, y - size/2, size, size);
+    
+    // Range circle
+    g.strokeStyle = 'rgba(100,150,255,0.2)';
+    g.lineWidth = 1;
+    g.beginPath();
+    g.arc(x, y, TOWER_STATS.basic.range, 0, Math.PI * 2);
+    g.stroke();
+  }
+  
+  g.restore();
+}
 
 // ------ Mouse events ------
 canvas.addEventListener('mousemove', (e) => {
@@ -526,12 +451,17 @@ canvas.addEventListener('mousemove', (e) => {
 });
 
 canvas.addEventListener('click', (e) => {
-  const rect = canvas.getBoundingClientRect();
-  const clickX = e.clientX - rect.left;
-  const clickY = e.clientY - rect.top;
-  const gridPos = worldToGrid(clickX, clickY);
-  placeTower(gridPos.gx, gridPos.gy);
+  if (gameState !== 'gameOver' && gameState !== 'victory') {
+    const rect = canvas.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const clickY = e.clientY - rect.top;
+    const gridPos = worldToGrid(clickX, clickY);
+    placeTower(gridPos.gx, gridPos.gy);
+  }
 });
+
+// Initialize button states
+btnPause.textContent = paused ? 'Play' : 'Pause';
 
 // Start the game loop
 requestAnimationFrame(loop);

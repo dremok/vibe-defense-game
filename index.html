@@ -6,17 +6,117 @@
     <title>TD Vibe</title>
     <style>
       html, body { height: 100%; margin: 0; background:#0b1020; color:#e6ecff; font-family: ui-sans-serif, system-ui, -apple-system; }
-      #hud { position: fixed; top: 8px; left: 8px; background: rgba(0,0,0,.35); padding: 6px 10px; border-radius: 8px; backdrop-filter: blur(4px); font-size: 14px; }
-      canvas { display:block; margin:0 auto; image-rendering: pixelated; }
-      button { margin-left: 8px; }
+      #hud { 
+        text-align: center;
+        background: rgba(0,0,0,.5); 
+        padding: 16px 24px; 
+        border-radius: 12px; 
+        backdrop-filter: blur(8px); 
+        font-size: 18px; 
+        font-weight: 500;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        margin: 20px auto;
+        width: fit-content;
+      }
+      canvas { 
+        display: block; 
+        margin: 30px auto 0 auto;
+        image-rendering: pixelated; 
+        box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+        border-radius: 8px;
+      }
+      button { 
+        margin-left: 12px; 
+        padding: 8px 16px; 
+        font-size: 16px; 
+        font-weight: 600;
+        background: rgba(255,255,255,0.1); 
+        color: #e6ecff; 
+        border: 1px solid rgba(255,255,255,0.2); 
+        border-radius: 6px; 
+        cursor: pointer; 
+        transition: all 0.2s ease;
+      }
+      button:hover { 
+        background: rgba(255,255,255,0.2); 
+        border-color: rgba(255,255,255,0.3);
+        transform: translateY(-1px);
+      }
+      button:active { 
+        transform: translateY(0);
+      }
+      #tower-selection {
+        position: fixed;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        background: rgba(0,0,0,.6);
+        padding: 20px;
+        border-radius: 12px;
+        backdrop-filter: blur(8px);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        font-size: 14px;
+        max-width: 200px;
+      }
+      .tower-btn {
+        display: block;
+        width: 100%;
+        margin: 8px 0;
+        padding: 12px;
+        text-align: left;
+        background: rgba(255,255,255,0.1);
+        border: 2px solid rgba(255,255,255,0.2);
+        color: #e6ecff;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 14px;
+      }
+      .tower-btn:hover {
+        background: rgba(255,255,255,0.2);
+        border-color: rgba(255,255,255,0.3);
+      }
+      .tower-btn.selected {
+        background: rgba(100,150,255,0.3);
+        border-color: rgba(100,150,255,0.6);
+      }
+      .tower-btn .tower-name {
+        font-weight: 600;
+        font-size: 16px;
+        margin-bottom: 4px;
+      }
+      .tower-btn .tower-stats {
+        font-size: 12px;
+        opacity: 0.8;
+        line-height: 1.2;
+      }
+      #title {
+        text-align: center;
+        font-size: 32px;
+        font-weight: bold;
+        color: #e6ecff;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+        margin: 20px 0;
+      }
     </style>
   </head>
   <body>
-    <div id="hud">FPS: <span id="fps">0</span> | Health: <span id="health">20</span>/20 | Gold: <span id="gold">500</span> | Wave: <span id="wave">0</span>
-      <button id="btnStart">Start</button>
-      <button id="btnPause">Pause</button>
+    <div id="title">Dr. Emok's Tower Defense Game</div>
+    <div id="hud">Health: <span id="health">20</span>/20 | Gold: <span id="gold">500</span> | Wave: <span id="wave">0</span>
+      <button id="btnPause">Play</button>
       <button id="btnSpeed">x1</button>
       <button id="btnWave">Start Wave</button>
+    </div>
+    <div id="tower-selection">
+      <h3 style="margin: 0 0 12px 0; text-align: center;">Tower Selection</h3>
+      <button class="tower-btn selected" id="btn-tower-basic">
+        <div class="tower-name">Basic Tower</div>
+        <div class="tower-stats">Cost: 100 • Range: 80<br>Damage: 2 • Rate: 1.5/s</div>
+      </button>
+      <button class="tower-btn" id="btn-tower-sniper">
+        <div class="tower-name">Sniper Tower</div>
+        <div class="tower-stats">Cost: 150 • Range: 120<br>Damage: 3 • Rate: 0.8/s<br><strong>Predictive targeting</strong></div>
+      </button>
     </div>
     <canvas id="game" width="960" height="540"></canvas>
     <script type="module" src="/src/main.ts"></script>

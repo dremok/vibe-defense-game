@@ -40,6 +40,25 @@ yarn lint           # ESLint (when configured)
 yarn format         # Prettier (when configured)
 ```
 
+### Verification Tools Available
+```bash
+# UI/Visual Verification (Playwright MCP)
+# - Take screenshots of http://localhost:5173/
+# - Navigate and interact with game elements  
+# - Capture before/after states for comparison
+# - Verify visual layout and styling changes
+
+# Game Logic Verification (Unit Tests)
+yarn test           # Run all unit tests (21 passing)
+# - Wave system tests
+# - Enemy behavior tests  
+# - Tower mechanics tests
+# - Balance and timing tests
+
+# Development Server
+yarn dev            # Start at http://localhost:5173/ for live testing
+```
+
 **Important:** Use `yarn` instead of `npm` for this project to avoid permission issues.
 
 ## Project Architecture
@@ -190,25 +209,47 @@ const FPS = 60;                     // Fixed timestep target
 ### Development Flow (NEVER DEVIATE):
 1. **Identify smallest possible change** (1-3 lines max)
 2. **Make the minimal change**  
-3. **Test immediately** (run in browser, verify behavior)
-4. **MANDATORY: Show results to user and get verification** 
-5. **User must confirm:** "I can see [specific feature] working in browser"
-6. **Only then** proceed to next micro-increment
+3. **MANDATORY: Verify your work FIRST using available tools:**
+   - **UI Changes**: Use Playwright MCP to take screenshots and verify visual results
+   - **Game Logic**: Run unit tests with `yarn test` to verify functionality
+   - **Other Changes**: Find appropriate verification method (console logs, file inspection, etc.)
+4. **Iterate until satisfied** - Fix issues and re-verify until results match expectations
+5. **THEN ask user to verify** - Only after YOU have confirmed it works correctly
+6. **User confirms final result** before proceeding to next micro-increment
 
-**🚨 CRITICAL:** User must test each change at http://localhost:5173/ and confirm it works before proceeding.
+**🚨 CRITICAL: YOU must verify your own work before asking the user to check it**
 
-### Testing Requirements:
-- **Test in browser after EVERY change** - no exceptions
-- **Create simple test scenarios** for complex functionality
-- **Show visual results** to user before claiming success
-- **If something fails**, stop immediately and debug that specific issue
+### Verification Requirements by Change Type:
 
-### When to Pause for User Verification:
-- After implementing any new major feature
-- After fixing any bug or error
-- Before making architectural changes
-- When visual results are unexpected
-- When you're unsure about the next step
+#### UI/Visual Changes (MANDATORY Playwright verification):
+```bash
+# Navigate to game: http://localhost:5173/
+# Take before screenshot
+# Make changes  
+# Take after screenshot
+# Compare and iterate until correct
+# THEN ask user to verify
+```
+
+#### Game Logic Changes (MANDATORY unit test verification):
+```bash
+yarn test  # Must pass all existing tests
+# Add new tests for new functionality
+# Verify test coverage for critical paths
+# THEN ask user to verify
+```
+
+#### Other Changes (Find appropriate verification):
+- File structure: Use `ls` or `find` to verify files exist
+- Configuration: Test build/dev commands work
+- Dependencies: Verify imports/exports function
+- Performance: Measure and compare benchmarks
+
+### When to Ask User for Final Verification:
+- After YOU have verified the change works correctly
+- After all automated tests pass
+- After visual verification shows expected results
+- Before moving to the next major feature
 
 ## Debugging & Problem Solving
 

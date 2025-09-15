@@ -121,15 +121,15 @@ describe('Tower System', () => {
       normalEnemy.y = basicTower.y;
       
       // Set last shot time to a very old time to ensure towers can shoot
-      const oldTime = performance.now() - 10000; // 10 seconds ago
-      basicTower.lastShot = oldTime;
-      sniperTower.lastShot = oldTime;
+      const currentSimulationTime = 10; // 10 seconds simulation time
+      basicTower.lastShotTime = 0; // Old shot time
+      sniperTower.lastShotTime = 0;
       
-      basicTower.update(0.1, [normalEnemy], 1, mockOnShoot);
+      basicTower.update(0.1, [normalEnemy], currentSimulationTime, mockOnShoot);
       const basicProjectileCount = projectiles.length;
       
       projectiles.length = 0; // Clear array
-      sniperTower.update(0.1, [normalEnemy], 1, mockOnShoot);
+      sniperTower.update(0.1, [normalEnemy], currentSimulationTime, mockOnShoot);
       const sniperProjectileCount = projectiles.length;
       
       // Both should shoot once if conditions are met
@@ -144,16 +144,16 @@ describe('Tower System', () => {
       normalEnemy.x = basicTower.x + 50;
       normalEnemy.y = basicTower.y;
       
-      const oldTime = performance.now() - 10000;
-      basicTower.lastShot = oldTime;
-      basicTower.update(0.1, [normalEnemy], 1, mockOnShoot);
+      const currentSimulationTime = 10;
+      basicTower.lastShotTime = 0;
+      basicTower.update(0.1, [normalEnemy], currentSimulationTime, mockOnShoot);
       
       expect(projectiles.length).toBe(1);
       expect(projectiles[0].damage).toBe(2); // Basic tower damage
       
       projectiles.length = 0;
-      sniperTower.lastShot = oldTime;
-      sniperTower.update(0.1, [normalEnemy], 1, mockOnShoot);
+      sniperTower.lastShotTime = 0;
+      sniperTower.update(0.1, [normalEnemy], currentSimulationTime, mockOnShoot);
       
       expect(projectiles.length).toBe(1);
       expect(projectiles[0].damage).toBe(3); // Sniper tower damage
@@ -170,16 +170,16 @@ describe('Tower System', () => {
       fastEnemy.y = basicTower.y;
       fastEnemy.i = 0; // At waypoint 0, moving toward waypoint 1
       
-      const oldTime = performance.now() - 10000;
-      basicTower.lastShot = oldTime;
-      sniperTower.lastShot = oldTime;
+      const currentSimulationTime = 10;
+      basicTower.lastShotTime = 0;
+      sniperTower.lastShotTime = 0;
       
-      basicTower.update(0.1, [fastEnemy], 1, mockOnShoot);
+      basicTower.update(0.1, [fastEnemy], currentSimulationTime, mockOnShoot);
       expect(projectiles.length).toBe(1);
       const basicProjectile = projectiles[0];
       
       projectiles.length = 0;
-      sniperTower.update(0.1, [fastEnemy], 1, mockOnShoot);
+      sniperTower.update(0.1, [fastEnemy], currentSimulationTime, mockOnShoot);
       expect(projectiles.length).toBe(1);
       const sniperProjectile = projectiles[0];
       

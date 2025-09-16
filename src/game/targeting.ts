@@ -94,7 +94,7 @@ export function calculateInterceptPoint(
   // Projectile distance at time t: projectileSpeed * speedMult * t
   // Constraint: distance from shooter to enemy position at time t equals projectile distance
   
-  let bestTime = 0;
+  // let bestTime = 0;
   let bestPosition = { x: enemy.x, y: enemy.y };
   let minError = Infinity;
   
@@ -110,7 +110,7 @@ export function calculateInterceptPoint(
     
     if (error < minError) {
       minError = error;
-      bestTime = time;
+      // bestTime = time;
       bestPosition = predictedPos;
     }
   }

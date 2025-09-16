@@ -53,7 +53,7 @@ describe('Speed Multiplier Targeting Analysis', () => {
     fastEnemy.y = waypoints[0].y;
     fastEnemy.i = 0;
     
-    const towerPos = { x: waypoints[0].x + 100, y: waypoints[0].y }; // 100px away
+    // const towerPos = { x: waypoints[0].x + 100, y: waypoints[0].y }; // 100px away
     const projectileSpeed = 200;
     
     console.log('Core Targeting Problem Analysis:');

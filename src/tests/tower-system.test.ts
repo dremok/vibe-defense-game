@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { Tower, TOWER_STATS } from '../game/tower.js';
 import { Enemy } from '../game/enemy.js';
-import type { TowerType } from '../game/types.js';
+// import type { TowerType } from '../game/types.js';
 
 describe('Tower System', () => {
   let basicTower: Tower;

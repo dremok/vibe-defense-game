@@ -33,9 +33,28 @@ yarn build          # Build for production
 yarn preview        # Preview production build
 ```
 
+### Deployment Commands
+```bash
+# Railway.app (Recommended)
+railway login
+railway init
+railway up
+
+# Vercel
+npx vercel --prod
+
+# Netlify (Manual)
+yarn build          # Build first
+# Then drag & drop dist/ folder to netlify.com
+
+# Test production build locally
+npx serve dist -s   # Serves on http://localhost:3000
+```
+
 ### Testing & Quality
 ```bash
-yarn test           # Run unit tests (Vitest - 21 tests passing)
+yarn test           # Run unit tests (Vitest - 37 tests passing)
+yarn build          # Production build
 yarn lint           # ESLint (when configured)  
 yarn format         # Prettier (when configured)
 ```
@@ -49,11 +68,17 @@ yarn format         # Prettier (when configured)
 # - Verify visual layout and styling changes
 
 # Game Logic Verification (Unit Tests)
-yarn test           # Run all unit tests (21 passing)
-# - Wave system tests
-# - Enemy behavior tests  
-# - Tower mechanics tests
-# - Balance and timing tests
+yarn test           # Run all unit tests (37 passing)
+# - Grid utilities tests (4 tests)
+# - Wave system tests (7 tests)
+# - Tower mechanics tests (12 tests)  
+# - Targeting logic tests (9 tests)
+# - Speed balance tests (2 tests)
+# - Predictive targeting tests (3 tests)
+
+# Production Testing
+yarn build          # Build for production
+npx serve dist -s   # Test production build locally
 
 # Development Server
 yarn dev            # Start at http://localhost:5173/ for live testing
@@ -157,18 +182,33 @@ yarn dev            # Start at http://localhost:5173/ for live testing
 
 **Status:** Polished, balanced tower defense with modern UI and fair gameplay
 
-### Phase 5 — Second Tower & Polish
-30. Tower 2 (Splash): AoE damage, expanding ring visual
-31. Tower upgrades: multiple levels with improved stats
-32. Save/load system: localStorage persistence
-33. Sound effects: Howler.js integration
-34. Performance optimization: entity pooling, offscreen culling
+### Phase 4.7 — Second Tower & Advanced Features ✅ COMPLETED
+30. ✅ Sniper Tower: 150 gold, 120 range, 3 damage, predictive targeting
+31. ✅ Advanced targeting algorithms with enemy velocity prediction
+32. ✅ Tower selection UI with real-time affordability indicators
+33. ✅ Color-coded placement preview (green/yellow/red feedback)
+34. ✅ Comprehensive unit testing for tower mechanics (12 tests)
 
-### Phase 6+ — Advanced Features
-35. BFS pathfinding: allow complex road networks
-36. No-block placement validation: prevent path blocking
-37. Multiple maps: JSON map loader system
-38. Achievement system: unlock progression
+**Status:** Complete tower defense with strategic depth and advanced AI targeting
+
+### Phase 5 — Production & Deployment ✅ COMPLETED  
+35. ✅ Production build optimization with clean TypeScript compilation
+36. ✅ Railway.app deployment configuration (railway.toml)
+37. ✅ Multiple deployment options (Railway, Vercel, Netlify)
+38. ✅ Comprehensive testing suite cleanup (37 tests passing)
+39. ✅ Complete documentation updates for deployment readiness
+
+**Status:** Production-ready game with multiple deployment options configured
+
+### Phase 6+ — Future Enhancements
+40. Tower upgrades: multiple levels with improved stats
+41. Additional tower types: splash damage, slow effects, area denial
+42. Save/load system: localStorage persistence
+43. Sound effects: Howler.js integration
+44. BFS pathfinding: allow complex road networks
+45. Multiple maps: JSON map loader system
+46. Achievement system: unlock progression
+47. Performance optimization: entity pooling, offscreen culling
 
 ## Core Game Constants
 

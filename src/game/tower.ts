@@ -66,7 +66,7 @@ export class Tower {
     return closest;
   }
   
-  update(dt: number, enemies: Enemy[], simulationTime: number, onShoot: (projectile: Projectile) => void) {
+  update(_dt: number, enemies: Enemy[], simulationTime: number, onShoot: (projectile: Projectile) => void) {
     const target = this.findTarget(enemies);
     const shootInterval = 1 / this.rate; // seconds between shots in simulation time
     if (target && simulationTime - this.lastShotTime > shootInterval) {

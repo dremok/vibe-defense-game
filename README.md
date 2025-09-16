@@ -1,463 +1,272 @@
 # Tower Defense Vibe Game 🎮
 
-## Current Status: Phase 4.6 Complete ✅ (UI Polish + Speed Balance)
+## Current Status: DEPLOYMENT READY ✅ (Complete Game + Production Build)
 
-A **browser-based tower defense** game built with TypeScript and Vite. Complete tower defense with wave progression, enemy variety, professional splash screens, modern responsive UI, and perfectly balanced gameplay across all speed multipliers.
+A **browser-based tower defense** game built with TypeScript and Vite. Complete tower defense with wave progression, enemy variety, two tower types with predictive targeting, professional UI, and perfectly balanced gameplay across all speed multipliers.
 
-**🎯 Play the current version:** `http://localhost:5173/` (after running `yarn dev`)
-
----
-
-## What's Working Now
-
-### Core Game Systems ✅
-* ✅ **Fixed timestep game loop** (60 FPS) with pause/resume
-* ✅ **HTML5 Canvas rendering** with interactive grid system 
-* ✅ **Mouse hover highlighting** - cells light up as you move your mouse
-* ✅ **Visual path system** - S-shaped path clearly visible as darker tiles
-* ✅ **Speed controls** (x1, x2, x4 multipliers) - perfectly balanced difficulty
-* ✅ **Modern responsive UI** - centered HUD, larger fonts, professional styling
-
-### Wave & Enemy Systems ✅  
-* ✅ **Wave progression** - 6 waves with manual "Start Wave" control
-* ✅ **Enemy variety** - Normal enemies (yellow circles) and fast enemies (red triangles)
-* ✅ **Wave splash screens** - Professional start/complete notifications
-* ✅ **Pathfinding** - enemies smoothly follow the S-curve path
-* ✅ **Base health system** - 20 HP, decreases when enemies escape
-* ✅ **Real-time HUD** - shows FPS, health, gold, and current wave
-
-### Tower System ✅
-* ✅ **Tower class** with stats (range, damage, rate, cost)
-* ✅ **Visual representation** - blue towers with range circles
-* ✅ **Interactive placement** - click grass tiles to place towers
-* ✅ **Combat system** - automatic targeting, projectiles, damage
-* ✅ **Gold economy** - tower costs, enemy kill rewards
-
-### Development Infrastructure ✅
-* ✅ **TypeScript** with full type safety and modular structure
-* ✅ **Clean modular architecture** - Separated into focused modules (Phase 4.5)
-* ✅ **Comprehensive testing** - Vitest with 21 tests (utils + wave + balance)
-* ✅ **Vite development server** with TypeScript and HMR
-* ✅ **Production build system** ready for deployment
-* ✅ **Game state management** - Professional state transitions
-* ✅ **Speed balance testing** - Mathematical collision compensation validation
-
-### Code Architecture & Balance ✅
-* ✅ **Modular structure** - Game systems separated into logical modules
-* ✅ **Type-safe interfaces** - Proper boundaries between components
-* ✅ **Maintainable codebase** - main.ts reduced from 537 to 315 lines
-* ✅ **Speed-independent gameplay** - Collision compensation for fair difficulty
-* ✅ **Mathematical balance** - 1x=1.00x, 2x=1.17x, 4x=1.63x difficulty ratio
-* ✅ **Modern UI/UX** - Play/Pause toggle, centered HUD, responsive design
+**🎯 Play the game:** 
+- **Development:** `http://localhost:5173/` (after running `yarn dev`)
+- **Production:** Ready for deployment to Railway.app, Netlify, or Vercel
 
 ---
 
-## Goals
+## 🎮 Game Features
 
-* **Runs in the browser** (no installs for players).
-* **Playable ASAP**: you get a moving dot on a path in minutes, then iterate.
-* **Baby steps**: each step yields a runnable, testable game state.
-* **Simple graphics**: procedural Canvas shapes or tiny SVGs that AI can generate.
+### Complete Tower Defense Experience ✅
+* ✅ **6 Progressive Waves** - Manual wave control with splash screen transitions
+* ✅ **2 Enemy Types** - Normal (yellow circles) and Fast (red triangles) with balanced stats
+* ✅ **2 Tower Types** - Basic towers and Sniper towers with predictive targeting
+* ✅ **Gold Economy** - Start with 500 gold, earn from kills, spend on towers
+* ✅ **Base Defense** - 20 health points, lose health when enemies escape
+* ✅ **Speed Controls** - x1, x2, x4 multipliers with balanced difficulty scaling
+
+### Modern UI & Polish ✅  
+* ✅ **Professional Design** - Centered HUD, modern fonts, dark theme
+* ✅ **Interactive Controls** - Play/Pause toggle, speed selector, Start Wave button
+* ✅ **Tower Selection Panel** - Visual tower stats and selection interface
+* ✅ **Real-time HUD** - Health, Gold, Current Wave display
+* ✅ **Visual Feedback** - Grid hover highlights, tower range visualization
+
+### Technical Excellence ✅
+* ✅ **Fixed Timestep Game Loop** (60 FPS) with proper pause/resume
+* ✅ **Modular Architecture** - Clean separation of game systems
+* ✅ **TypeScript** with full type safety and proper interfaces
+* ✅ **Comprehensive Testing** - 37 unit tests covering all major systems
+* ✅ **Production Build** - Optimized build ready for deployment
+* ✅ **Speed Balance** - Mathematical collision compensation for fair gameplay
 
 ---
 
-## Tech Stack (kept minimal & friendly for AI pair-coding)
-
-* **Language**: TypeScript
-* **Dev server & build**: Vite (fast HMR)
-* **Rendering**: HTML5 Canvas 2D
-* **UI & Debug**: Native HTML + \[Tweakpane] for live tuning
-* **Audio**: Howler.js
-* **Pathfinding**: Start with waypoint list → upgrade to BFS → optional A\*
-* **Data**: JSON config (optional zod schemas)
-* **Save**: `localStorage`
-* **Format/Test**: Prettier, ESLint, Vitest (unit tests)
-* **Deployment**: Netlify/Vercel (drag-n-drop or Git push)
-
-> Optional libs: `zod` (config safety), `playwright` (e2e later)
-
----
-
-## 🚀 Development Setup
+## 🚀 Quick Start
 
 ### Prerequisites
 - Node.js (v16+)
 - Yarn (recommended) or npm
 
-### Quick Start
-
+### Development
 ```bash
-# Clone or navigate to project directory
+# Clone/navigate to project
 cd vibe-defense-game
 
-# Install dependencies (using Yarn - recommended)
+# Install dependencies
 yarn install
-
-# OR with npm (if you encounter cache issues, use yarn instead)
-npm install
 
 # Start development server
 yarn dev
 
-# Open in browser
-http://localhost:5173/
+# Open browser to http://localhost:5173/
 ```
 
-### Available Commands
-
+### Production Build & Deployment
 ```bash
-yarn dev          # Start development server (http://localhost:5173/)
-yarn build        # Build for production
-yarn preview      # Preview production build
-yarn test         # Run tests (when implemented)
+# Build for production
+yarn build
+
+# Test production build locally
+npx serve dist -s
+
+# Deploy to Railway.app
+railway login
+railway init
+railway up
+
+# OR deploy to Vercel
+npx vercel --prod
+
+# OR deploy to Netlify (drag & drop 'dist' folder)
 ```
 
-**Note:** If you encounter npm permission issues, use `yarn` instead of `npm`.
+### Testing
+```bash
+yarn test           # Run all 37 unit tests
+yarn lint           # ESLint (when configured)
+yarn format         # Prettier formatting
+```
 
 ---
 
-## 📁 Current Project Structure
+## 📁 Project Structure
 
 ```
 vibe-defense-game/
 ├── index.html              # Main HTML entry point
 ├── src/
-│   ├── main.ts            # Game loop, UI, rendering (315 lines, was 537)
-│   ├── utils.ts           # Grid utilities (world↔grid conversion)
-│   ├── tests/             # ✨ NEW: Comprehensive test suite (21 tests)
+│   ├── main.ts            # Game loop, UI, rendering (315 lines)
+│   ├── utils.ts           # Grid utilities (world↔grid conversion)  
+│   ├── tests/             # Comprehensive test suite (37 tests)
 │   │   ├── utils.test.ts           # Grid utility tests (4 tests)
 │   │   ├── wave.test.ts            # Wave system tests (7 tests)
-│   │   ├── speed-balance.test.ts   # Speed multiplier analysis (2 tests)
-│   │   ├── collision-frequency.test.ts # Collision detection research (2 tests)
-│   │   ├── collision-fix.test.ts   # Balance fix validation (3 tests)
-│   │   ├── balanced-collision.test.ts # Mathematical compensation (2 tests)
-│   │   └── gentle-collision.test.ts # Final balance testing (1 test)
-│   └── game/              # ✨ NEW: Modular game architecture
+│   │   ├── tower-system.test.ts    # Tower mechanics tests (12 tests)
+│   │   ├── targeting.test.ts       # Targeting logic tests (9 tests)
+│   │   ├── speed-balance.test.ts   # Speed multiplier tests (2 tests)
+│   │   └── speed-targeting.test.ts # Targeting analysis tests (3 tests)
+│   └── game/              # Modular game architecture
 │       ├── types.ts       # Shared interfaces and types
 │       ├── map.ts         # Path data and waypoints
 │       ├── enemy.ts       # Enemy class with movement and rendering
 │       ├── tower.ts       # Tower class with targeting and combat
 │       ├── projectile.ts  # Projectile class with physics
-│       └── waves.ts       # Wave management with WaveManager class
-├── package.json           # Dependencies and scripts  
+│       ├── waves.ts       # Wave management with WaveManager class
+│       └── targeting.ts   # Advanced predictive targeting algorithms
+├── dist/                  # Production build output
+├── railway.toml          # Railway deployment configuration
+├── deploy-instructions.md # Deployment guide
+├── package.json          # Dependencies and scripts  
 ├── tsconfig.json         # TypeScript configuration
 ├── vite.config.ts        # Vite build configuration
-├── yarn.lock            # Dependency lock file
-├── CLAUDE.md           # AI development guidance
-├── PROJECT_STATUS.md   # Detailed project tracking
-└── README.md          # This file
+├── CLAUDE.md            # AI development guidance
+├── PROJECT_STATUS.md    # Detailed project tracking
+└── README.md           # This file
 ```
 
 ---
 
-## Minimal Playable MVP (v0) — Current Implementation
+## 🎯 Gameplay
 
-> This gives you: Canvas, fixed game loop, FPS counter, a road, and a single enemy moving along the path. You can play‑test immediately.
+### How to Play
+1. **Start a Wave** - Click "Start Wave" to begin enemy spawning
+2. **Place Towers** - Click on grass tiles to place towers (costs gold)
+3. **Choose Tower Type**:
+   - **Basic Tower** - 100 gold, good range, steady damage
+   - **Sniper Tower** - 150 gold, longer range, predictive targeting
+4. **Defend Your Base** - Don't let enemies reach the end (20 health points)
+5. **Manage Economy** - Earn gold from kills to buy more towers
+6. **Progress Through Waves** - 6 waves of increasing difficulty
 
-**`index.html`**
+### Game Balance
+- **Wave 1-2**: 5-8 normal enemies, learn the basics
+- **Wave 3**: Introduction of fast enemies (red triangles)
+- **Wave 4-6**: Mixed enemy types with increasing counts
+- **Speed Controls**: x1, x2, x4 multipliers maintain balanced difficulty
+- **Tower Economy**: Balanced costs vs rewards for strategic decisions
 
-```html
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TD Vibe</title>
-    <style>
-      html, body { height: 100%; margin: 0; background:#0b1020; color:#e6ecff; font-family: ui-sans-serif, system-ui, -apple-system; }
-      #hud { position: fixed; top: 8px; left: 8px; background: rgba(0,0,0,.35); padding: 6px 10px; border-radius: 8px; backdrop-filter: blur(4px); font-size: 14px; }
-      canvas { display:block; margin:0 auto; image-rendering: pixelated; }
-      button { margin-left: 8px; }
-    </style>
-  </head>
-  <body>
-    <div id="hud">FPS: <span id="fps">0</span>
-      <button id="btnStart">Start</button>
-      <button id="btnPause">Pause</button>
-      <button id="btnSpeed">x1</button>
-    </div>
-    <canvas id="game" width="960" height="540"></canvas>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
-</html>
+---
+
+## 🔧 Tech Stack
+
+* **Language**: TypeScript
+* **Build Tool**: Vite (fast HMR, optimized builds)
+* **Rendering**: HTML5 Canvas 2D
+* **UI**: Native HTML with modern CSS
+* **Testing**: Vitest (37 comprehensive tests)
+* **Audio**: Howler.js (ready for sound effects)
+* **Deployment**: Railway.app, Vercel, or Netlify compatible
+* **Architecture**: Modular game systems with clean interfaces
+
+---
+
+## 📊 Development Phases Completed
+
+### Phase 0 — Boot & Loop ✅ 
+* Fixed timestep game loop with pause/resume
+* Canvas rendering with grid system
+* Speed controls (x1, x2, x4)
+
+### Phase 1 — Grid & Path ✅
+* Interactive grid with hover highlighting
+* S-curve path with visual feedback
+* World ↔ grid coordinate conversion
+
+### Phase 2 — Enemies & Base ✅
+* Enemy pathfinding along waypoints
+* Base health system (20 HP)
+* Real-time HUD with game state
+
+### Phase 3 — First Tower ✅
+* Tower placement system
+* Combat mechanics (targeting, projectiles, damage)
+* Gold economy with rewards
+
+### Phase 4 — Waves & Second Enemy ✅
+* 6-wave progression system
+* Fast enemy type with different stats
+* Wave splash screens and state management
+
+### Phase 4.5 — Architecture Refactoring ✅
+* Modular game architecture
+* Separated game systems into focused modules
+* Clean interfaces and type safety
+
+### Phase 4.6 — UI Polish & Speed Balance ✅
+* Modern responsive UI design
+* Play/Pause toggle functionality  
+* Mathematical speed balance system
+
+### Phase 4.7 — Second Tower & Advanced Features ✅
+* Sniper tower with predictive targeting
+* Advanced targeting algorithms
+* Tower selection interface
+
+### Phase 5 — Production & Deployment ✅
+* Production build optimization
+* Deployment configuration (Railway, Vercel, Netlify)
+* Comprehensive testing suite
+* Documentation updates
+
+---
+
+## 🧪 Testing
+
+The game includes a comprehensive test suite covering:
+
+- **Grid Utilities** (4 tests) - Coordinate conversion, bounds checking
+- **Wave System** (7 tests) - Wave progression, enemy spawning, state transitions  
+- **Tower Mechanics** (12 tests) - Targeting, shooting, damage, tower types
+- **Targeting Logic** (9 tests) - Range detection, enemy selection, hit detection
+- **Speed Balance** (2 tests) - Speed multiplier impact analysis
+- **Predictive Targeting** (3 tests) - Advanced targeting algorithm validation
+
+All tests pass and validate the game's balance and functionality.
+
+---
+
+## 🚀 Deployment Options
+
+### Railway.app (Recommended)
+```bash
+railway login
+railway init  
+railway up
 ```
 
-**`src/main.ts`**
-
-```ts
-const canvas = document.getElementById('game') as HTMLCanvasElement;
-const ctx = canvas.getContext('2d')!;
-const fpsEl = document.getElementById('fps')!;
-const btnStart = document.getElementById('btnStart')!;
-const btnPause = document.getElementById('btnPause')!;
-const btnSpeed = document.getElementById('btnSpeed')!;
-
-// ------ Game constants ------
-const CELL = 32;
-const W = canvas.width;
-const H = canvas.height;
-let speedMult = 1;
-
-// Simple S-curve path as waypoints (grid cells converted to px centers)
-const pathCells = [
-  [1,1],[2,1],[3,1],[4,1],[5,1],[6,1],[7,1],[8,1],
-  [8,2],[8,3],[8,4],[8,5],[8,6],
-  [7,6],[6,6],[5,6],[4,6],[3,6],[2,6],
-  [2,7],[2,8],[2,9],[2,10],[2,11],
-  [3,11],[4,11],[5,11],[6,11],[7,11],[8,11],[9,11],[10,11]
-];
-const waypoints = pathCells.map(([gx, gy]) => ({ x: gx*CELL + CELL/2, y: gy*CELL + CELL/2 }));
-
-// ------ Enemy ------
-class Enemy {
-  x: number; y: number; i = 0; speed = 80; hp = 10; alive = true;
-  constructor() { this.x = waypoints[0].x; this.y = waypoints[0].y; }
-  update(dt: number) {
-    if (!this.alive) return;
-    const target = waypoints[this.i+1];
-    if (!target) { // reached end
-      this.alive = false; // (damage base later)
-      return;
-    }
-    const dx = target.x - this.x;
-    const dy = target.y - this.y;
-    const dist = Math.hypot(dx, dy);
-    const step = this.speed * dt * speedMult;
-    if (dist <= step) { this.x = target.x; this.y = target.y; this.i++; }
-    else { this.x += (dx/dist) * step; this.y += (dy/dist) * step; }
-  }
-  draw(g: CanvasRenderingContext2D) {
-    g.fillStyle = '#ffcc33';
-    g.beginPath(); g.arc(this.x, this.y, 8, 0, Math.PI*2); g.fill();
-  }
-}
-
-// ------ Spawner ------
-let spawnTimer = 0;
-const enemies: Enemy[] = [];
-function spawnEnemy() { enemies.push(new Enemy()); }
-
-// ------ Loop (fixed update) ------
-let acc = 0; const step = 1/60; let last = performance.now();
-let frames = 0, fps = 0, fpsAccum = 0; let paused = true;
-
-function loop(now: number) {
-  requestAnimationFrame(loop);
-  let dt = (now - last) / 1000; if (dt > 0.25) dt = 0.25; last = now;
-  if (!paused) acc += dt;
-  while (acc >= step) { update(step); acc -= step; }
-  render();
-  // FPS simple
-  fpsAccum += dt; frames++;
-  if (fpsAccum >= 0.5) { fps = Math.round(frames / fpsAccum); fpsEl.textContent = String(fps); frames = 0; fpsAccum = 0; }
-}
-requestAnimationFrame(loop);
-
-function update(dt: number) {
-  spawnTimer -= dt;
-  if (spawnTimer <= 0) { spawnEnemy(); spawnTimer = 2; }
-  enemies.forEach(e => e.update(dt));
-}
-
-function render() {
-  // background
-  ctx.fillStyle = '#0f1733'; ctx.fillRect(0,0,W,H);
-
-  // grid
-  ctx.strokeStyle = 'rgba(255,255,255,0.06)';
-  for (let x=0; x<W; x+=CELL) { ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke(); }
-  for (let y=0; y<H; y+=CELL) { ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke(); }
-
-  // road
-  ctx.fillStyle = '#2b334d';
-  pathCells.forEach(([gx,gy]) => {
-    ctx.fillRect(gx*CELL+1, gy*CELL+1, CELL-2, CELL-2);
-  });
-
-  // enemies
-  enemies.forEach(e => e.draw(ctx));
-}
-
-// ------ Controls ------
-btnStart.addEventListener('click', () => { paused = false; });
-btnPause.addEventListener('click', () => { paused = true; });
-btnSpeed.addEventListener('click', () => {
-  const cycle = { 'x1': 1, 'x2': 2, 'x4': 4 } as const;
-  const next = btnSpeed.textContent === 'x1' ? 'x2' : btnSpeed.textContent === 'x2' ? 'x4' : 'x1';
-  btnSpeed.textContent = next;
-  speedMult = next === 'x1' ? 1 : next === 'x2' ? 2 : 4;
-});
+### Vercel
+```bash
+npx vercel --prod
 ```
 
-> With this base, you can **Start/Pause**, see a **grid & road**, and watch **enemies move** along the path at variable speed. From here, you’ll add towers and shooting in tiny increments.
+### Netlify
+1. Build: `yarn build`
+2. Drag & drop `dist` folder to netlify.com
+
+### Manual Static Hosting
+1. Build: `yarn build`  
+2. Upload `dist` folder contents to any web server
 
 ---
 
-## Recommended Project Structure (grow into this)
+## 🎮 Game Design Philosophy
 
-```
-/src
-  main.ts                # boot, loop, wire UI
-  engine/
-    loop.ts              # (optional) extract fixed timestep
-    input.ts             # mouse/keys
-    rng.ts               # seeded PRNG if needed
-    debugHud.ts          # stats overlays
-  game/
-    types.ts             # shared interfaces
-    grid.ts              # grid + math
-    path.ts              # BFS/A* utilities
-    map.ts               # map data & loaders
-    entity.ts            # base types
-    enemy.ts             # enemies
-    tower.ts             # towers & targeting
-    projectile.ts        # bullets/splash
-    waves.ts             # wave definitions
-    balance.ts           # tuning values
-    save.ts              # localStorage
-  ui/
-    hud.ts               # text overlays, buttons
-    pane.ts              # Tweakpane bindings
-index.html
-style.css
-vite.config.ts
-```
+* **Incremental Development** - Each phase delivers a playable game
+* **Player-First** - Immediate feedback and clear game state
+* **Balanced Gameplay** - Mathematical approach to difficulty scaling
+* **Modern Web Standards** - TypeScript, modular architecture, comprehensive testing
+* **AI-Friendly Codebase** - Clean interfaces, well-documented systems
 
 ---
 
-## Baby-Step Roadmap (playable after every step)
+## 🔮 Future Enhancements
 
-After each step: **play 30–60s**, commit (`v0.0.X`), note “what’s next” in `TODO.md`.
+Ready for Phase 6+ expansion:
+* **Tower Upgrades** - Multiple levels for each tower type
+* **More Tower Types** - Splash damage, slow effects, etc.
+* **Save/Load System** - LocalStorage persistence
+* **Sound Effects** - Howler.js integration
+* **Visual Effects** - Particle systems, animations
+* **Multiple Maps** - JSON map loader system
+* **Achievement System** - Progress tracking and unlocks
 
-### Phase 0 — Boot & Loop
-
-1. **Hello Canvas**: draw background & FPS.
-2. **Fixed loop**: separate `update(dt)` and `render()`.
-3. **Pause/Speed**: buttons for Start, Pause, x1/x2/x4.
-
-### Phase 1 — Grid & Path
-
-4. **Grid module**: 32px cells, world↔grid math, hover highlight.
-5. **Road**: author a path (array of grid cells); render as darker tiles.
-6. **Pathfollow v1**: enemies follow waypoint list (already done in v0). Later: BFS on road graph.
-
-### Phase 2 — Enemies & Base
-
-7. **Enemy variants**: slow tank (hp↑ speed↓), fast weakling (hp↓ speed↑). Simple color/shape swap.
-8. **Base + HP**: reaching end damages base; HUD shows hearts; defeat when ≤ 0.
-
-### Phase 3 — First Tower
-
-9. **Placement**: click on grass tile to place tower (cost gold). Prevent road/overlap.
-10. **Targeting & Projectile**: nearest enemy within radius; bullets travel; on hit → damage; kill → +gold.
-11. **Balance panel**: expose tower range/rate/damage & enemy hp/speed via Tweakpane for live tuning.
-
-### Phase 4 — Waves & Second Tower
-
-12. **Waves**: define array of waves (type, count, spacing). Buttons: Start/Pause/Next Wave.
-13. **Enemy 2**: triangle fast enemy.
-14. **Tower 2 (Splash)**: slower rate, AoE on hit. Visual: expanding ring.
-
-### Phase 5 — UX & QoL
-
-15. **HUD polish**: gold, hearts, wave, speed; simple icons; hover tile outline.
-16. **Save/Load**: persist run state to `localStorage` on pause/quit; load at boot.
-17. **SFX**: howler.js hooks for shoot/hit/death/wave start.
-
-### Phase 6 — Pathfinding & Map Safety
-
-18. **BFS → A**\* (optional): allow networked roads. Keep authored path simple.
-19. **No-block placement**: simulate tower as obstacle; if path breaks, reject with tooltip.
-20. **Map loader**: map JSON; swap maps without code changes.
-
-### Phase 7 — Game Feel & Perf
-
-21. **One extra mechanic**: armor on tanks OR slow debuff bullet.
-22. **Win/Lose screens**: overlays, restart, simple stats.
-23. **Performance guardrails**: projectile pooling, offscreen cull, cap entities/frame. Target >55 FPS with 200+ enemies.
-
-### Stretch Goals (later)
-
-* Tower upgrades & branching paths
-* Multiple maps + tiny in-game map editor (paint roads)
-* Enemy abilities (shield/regeneration)
-* Difficulty presets + daily seed
-* Touch/mobile controls
-* Achievements & stats
+The modular architecture makes these additions straightforward to implement.
 
 ---
 
-## Claude Code Prompt Snippets (use as you iterate)
-
-* **Boot**: “Create `index.html` + `src/main.ts` for a canvas game with Vite. Show a colored background, grid, and FPS overlay using a fixed update loop.”
-* **Placement**: “Add tower placement on empty grass tiles (cost 100 gold). Prevent placing on road or overlapping an existing tower.”
-* **Targeting**: “Implement nearest-enemy targeting within range; bullets with travel time; on hit, deal damage and grant gold.”
-* **Balance**: “Wire Tweakpane to tower range/rate/damage and enemy hp/speed so I can tune live.”
-* **Waves**: “Create `waves.ts` with typed wave schema; add Start/Pause/Next Wave buttons.”
-* **Path safety**: “Before placing a tower, temporarily block the tile and run BFS between start/end; if no path, reject with a tooltip.”
-* **Refactor**: “Extract rendering into `render.ts`; keep logic/data separate for easy visual swaps.”
-
----
-
-## Minimal Data Shapes (guidance)
-
-```ts
-// game/types.ts
-export type Vec2 = { x: number; y: number };
-export type EnemyType = 'slow' | 'fast';
-export type TowerType = 'single' | 'splash';
-
-export interface EnemyDef { hp: number; speed: number; reward: number; }
-export interface TowerDef { cost: number; range: number; rate: number; damage: number; splash?: number; }
-
-export interface Wave { type: EnemyType; count: number; spacing: number; }
-```
-
----
-
-## Balancing Tips
-
-* Show a **DPS meter** when a tower is selected (rolling avg).
-* Maintain a **wave budget** (sum of hp × speed × count) and scale tower stats to counter it.
-* Add a **“god mode”**: spawn a dummy wave repeatedly to tune.
-
----
-
-## Testing & Quality
-
-* **Vitest**: math/path tests (e.g., path exists when removing a road tile?).
-* **Playwright (optional)**: click Start, place a tower, ensure baseHP > 0 after 30s.
-* **CI**: GitHub Action → `npm ci && npm run build && npm test`.
-
----
-
-## Deployment
-
-* `npm run build` → deploy `/dist` to Netlify/Vercel.
-* Set up a **staging** branch for quick playtests.
-
----
-
-## What to do next (copy to `TODO.md`)
-
-* ✅ ~~Implement Step 9: Tower placement on grass~~ **COMPLETED**
-* ✅ ~~Implement Step 10: Targeting & projectile damage~~ **COMPLETED**
-* ✅ ~~Implement wave system with defined enemy patterns~~ **COMPLETED**
-* ✅ ~~Make a second enemy type (triangle fast)~~ **COMPLETED**
-* ✅ ~~Add wave splash screens and game state management~~ **COMPLETED**
-* ✅ ~~Fix speed multiplier balance issue with collision detection~~ **COMPLETED**
-* ✅ ~~Enhance UI with modern design and Play/Pause toggle~~ **COMPLETED**
-* ✅ ~~Add comprehensive testing suite for balance validation~~ **COMPLETED**
-* [ ] Add Tweakpane sliders for range, rate, damage, enemy hp/speed.
-* [ ] Add second tower type with splash damage.
-* [ ] Implement tower upgrade system.
-
----
-
-### Notes on Graphics (AI-friendly)
-
-* Use **solid shapes**: circles/triangles/squares, 1–2 accent colors.
-* **Towers**: square base + short barrel line; splash tower gets a ring.
-* **Bullets**: tiny circles; splash as expanding alpha ring.
-* **Hit effect**: brief starburst lines or alpha pulse.
-* All of these are easy to request/modify via AI-generated Canvas or inline SVG code snippets.
+**🎯 Ready to share with friends! The game is feature-complete, polished, tested, and deployment-ready.**

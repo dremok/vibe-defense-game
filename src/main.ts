@@ -3,7 +3,7 @@ import { Enemy } from './game/enemy.js';
 import { Tower, TOWER_STATS } from './game/tower.js';
 import { Projectile } from './game/projectile.js';
 import { WaveManager } from './game/waves.js';
-import { pathCells, waypoints } from './game/map.js';
+import { pathCells } from './game/map.js';
 import type { GameState, TowerType } from './game/types.js';
 
 const canvas = document.getElementById('game') as HTMLCanvasElement;
@@ -32,7 +32,8 @@ let mouseX = 0, mouseY = 0;
 
 // ------ Base system ------
 let baseHealth = 20;
-const MAX_HEALTH = 20;
+// const MAX_HEALTH = 20;
+let baseDamageFlash = 0; // Timer for damage flash effect
 
 // ------ Gold system ------
 let gold = 500; // Starting gold
@@ -48,6 +49,7 @@ const enemies: Enemy[] = [];
 
 function damageBase() {
   baseHealth = Math.max(0, baseHealth - 1);
+  baseDamageFlash = 0.5; // Flash for 0.5 seconds
   if (baseHealth <= 0) {
     gameState = 'gameOver';
     paused = true;
@@ -167,6 +169,11 @@ function update(dt: number) {
     return;
   }
   
+  // Update base damage flash effect
+  if (baseDamageFlash > 0) {
+    baseDamageFlash = Math.max(0, baseDamageFlash - dt);
+  }
+  
   // Update wave system
   if (waveManager.update(dt, enemies)) {
     if (waveManager.isLastWave()) {
@@ -217,6 +224,81 @@ function update(dt: number) {
       }
     }
   }
+}
+
+function drawBase(g: CanvasRenderingContext2D) {
+  // Get the base position (end of the path)
+  const baseGridX = 10;
+  const baseGridY = 11;
+  const baseX = baseGridX * CELL + CELL / 2;
+  const baseY = baseGridY * CELL + CELL / 2;
+  
+  // Calculate health percentage for visual feedback
+  const healthPercent = baseHealth / 20;
+  
+  // Base flash effect when damaged
+  const flashAlpha = Math.max(0, baseDamageFlash);
+  
+  // Main base structure - castle-like building
+  g.save();
+  g.translate(baseX, baseY);
+  
+  // Base foundation (square)
+  g.fillStyle = flashAlpha > 0 ? `rgba(255,100,100,${0.8 + flashAlpha * 0.2})` : '#4a5568';
+  g.fillRect(-12, -8, 24, 16);
+  
+  // Base outline
+  g.strokeStyle = '#2d3748';
+  g.lineWidth = 2;
+  g.strokeRect(-12, -8, 24, 16);
+  
+  // Castle towers (smaller rectangles on corners)
+  g.fillStyle = flashAlpha > 0 ? `rgba(255,120,120,${0.7 + flashAlpha * 0.2})` : '#68788a';
+  g.fillRect(-14, -12, 6, 8); // Left tower
+  g.fillRect(8, -12, 6, 8);   // Right tower
+  g.strokeRect(-14, -12, 6, 8);
+  g.strokeRect(8, -12, 6, 8);
+  
+  // Castle crenellations (small rectangles on top)
+  g.fillRect(-13, -12, 2, 3);
+  g.fillRect(-9, -12, 2, 3);
+  g.fillRect(9, -12, 2, 3);
+  g.fillRect(13, -12, 2, 3);
+  
+  // Main gate/entrance
+  g.fillStyle = '#1a202c';
+  g.fillRect(-4, -2, 8, 10);
+  g.strokeStyle = '#2d3748';
+  g.strokeRect(-4, -2, 8, 10);
+  
+  // Health bar above the base
+  const barWidth = 24;
+  const barHeight = 4;
+  const barY = -20;
+  
+  // Health bar background
+  g.fillStyle = '#2d3748';
+  g.fillRect(-barWidth/2, barY, barWidth, barHeight);
+  
+  // Health bar fill (green to red based on health)
+  const healthColor = healthPercent > 0.5 
+    ? `rgb(${Math.floor((1 - healthPercent) * 255 * 2)}, 255, 0)` 
+    : `rgb(255, ${Math.floor(healthPercent * 255 * 2)}, 0)`;
+  g.fillStyle = healthColor;
+  g.fillRect(-barWidth/2, barY, barWidth * healthPercent, barHeight);
+  
+  // Health bar outline
+  g.strokeStyle = '#4a5568';
+  g.lineWidth = 1;
+  g.strokeRect(-barWidth/2, barY, barWidth, barHeight);
+  
+  // Health text
+  g.fillStyle = '#e2e8f0';
+  g.font = '10px Arial';
+  g.textAlign = 'center';
+  g.fillText(`${baseHealth}/20`, 0, barY - 4);
+  
+  g.restore();
 }
 
 function renderSplash() {
@@ -311,6 +393,9 @@ function render() {
     ctx.fillRect(gx * CELL + 1, gy * CELL + 1, CELL - 2, CELL - 2);
   });
   
+  // Draw the base at the end of the path
+  drawBase(ctx);
+  
   // Hover highlight and tower placement preview
   const hoverGrid = worldToGrid(mouseX, mouseY);
   if (hoverGrid.gx >= 0 && hoverGrid.gx * CELL < W && hoverGrid.gy >= 0 && hoverGrid.gy * CELL < H) {
@@ -357,7 +442,7 @@ btnPause.addEventListener('click', () => {
   btnPause.textContent = paused ? 'Play' : 'Pause';
 });
 btnSpeed.addEventListener('click', () => {
-  const cycle = { 'x1': 1, 'x2': 2, 'x4': 4 } as const;
+  // const cycle = { 'x1': 1, 'x2': 2, 'x4': 4 } as const;
   const next = btnSpeed.textContent === 'x1' ? 'x2' : btnSpeed.textContent === 'x2' ? 'x4' : 'x1';
   btnSpeed.textContent = next;
   speedMult = next === 'x1' ? 1 : next === 'x2' ? 2 : 4;

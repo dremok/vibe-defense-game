@@ -20,6 +20,7 @@
   "dependencies": {
     "@playwright/mcp": "^0.0.37",
     "howler": "^2.2.3",
+    "serve": "^14.2.5",
     "tweakpane": "^4.0.1",
     "zod": "^3.22.4"
   }

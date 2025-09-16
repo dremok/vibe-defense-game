@@ -1,4 +1,4 @@
-import type { Wave, EnemyType } from './types.js';
+import type { Wave } from './types.js';
 import { Enemy } from './enemy.js';
 
 export const waves: Wave[] = [

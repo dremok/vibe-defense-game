@@ -1,0 +1,5 @@
+[build]
+command = "yarn install && yarn build"
+
+[deploy]
+startCommand = "npx serve dist -s -l 3000"
